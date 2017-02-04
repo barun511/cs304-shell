@@ -11,7 +11,23 @@ def break_into_arguments(command):
     return shlex.split(command)
 
 def execute(command):
-   return None
+    if(command[-1]=='&'):
+        background_process=True
+        command.pop()
+    else:
+        background_process=False
+    
+    process_id = os.fork() # Dangerous. Use with care.
+    
+    if process_id==0:
+        os.execvp(command[0],command)
+    elif process_id>0:
+        if background_process:
+            return None
+        else:
+            returnid, status = os.waitpid(process_id, 0)
+            return None
+                
 
 def shell_loop():
     status = True    
