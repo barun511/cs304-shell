@@ -10,14 +10,21 @@ from builtincommands import *
 def break_into_arguments(command):
     return shlex.split(command)
 
+def execute(command):
+   return None
 
 def shell_loop():
     status = True    
     while status == True:
-        print("$", end = ' ')
+        print(os.getcwd() + "$", end = ' ') # The shell prompt
         command = break_into_arguments(input())
+        if len(command)==0: # Empty lines do nothing to the prompt
+            continue
         if is_built_in(command[0]):
-            print("This part has yet to be implemented")
+            error = response(command)
+            if(error!=None):
+                print(error)
         else:
-            os.execvp(command[0],command)
+            execute(command)
+
 shell_loop()
