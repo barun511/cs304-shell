@@ -3,7 +3,7 @@
     The built in commands will return None if they execute correctly, otherwise they will return an error string.
 '''
 import os
-builtincommands = [ "ls", "cd", "exit", "print","pwd" ]
+builtincommands = [  "cd", "exit", "print","pwd" ]
 def is_built_in(command):
     return command in builtincommands
 
@@ -11,17 +11,19 @@ def cd(command):
     if(len(command)>2):
         return "Error: Cannot change to multiple directories."
     if(len(command)==1):
-        return "Error: No directory specified."
+        os.chdir(os.environ["HOME"])
     else:
         if(os.path.isdir(command[1])):
             os.chdir(command[1])
         else:
             return "Error: Directory not found."
+
 def pwd(command):
     if(len(command)>=2):
         return "Error: arguments invalid"
     else:
         print(os.getcwd())
+
 def ls(command):
     if(len(command)>2):
         return "Error: Too many commands."
@@ -35,6 +37,8 @@ def ls(command):
         else:
             return "Error: Not a directory"
 
+def exit(command):
+    return "Logout"
 
 def response(command): # There must surely be a better way to do this...
     print(command[0])
@@ -44,4 +48,6 @@ def response(command): # There must surely be a better way to do this...
         return pwd(command)
     if(command[0]=="ls"):
         return ls(command)
+    if(command[0]=="exit"):
+        return exit(command)
 
