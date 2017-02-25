@@ -20,7 +20,7 @@ if len(sys.argv) > 1:
 
 environment_variables = ["PATH", "HOME"]
 local_variables = dict()
-
+local_variables["barun"] = "Barun is the most awesome guy ever"
 
 def break_into_arguments(command):
     return shlex.split(command)
@@ -56,17 +56,32 @@ def shell_loop():
 
         if debug_mode:
             print("Running " + ' '.join(command))
-
+        
+        if command[0]=="set" or command[0]=="append": # set is keyword to set a variable
+            if len(command)>3:
+                print("Incorrect format: Use set/append <variable_name> <value>")
+            elif command[0]=="set":
+                if command[1] in environment_variables:
+                    os.environ[command[1]]=command[2]
+                else:
+                    local_variables[command[1]]=command[2]
+            else:
+                if command[1] in environment_variables:
+                    os.environ[command[1]]+=command[2]
+                elif command[1] in local_variables:
+                    local_variables[command[1]]+=command[2]
+                else:
+                    local_variables[command[1]]=command[2]
+            continue
         # Replace all variables with values that they should have
-        for argument in command:
-            if argument[0]=='$' and argument.find('=') < 0:
-                variable_name = argument[1:]
-                print(variable_name)
+        for i in range(len(command)):
+            if command[i][0]=='$' and command[i][0].find('=') < 0:
+                variable_name = command[i][1:]
                 if variable_name in environment_variables:
-                    argument = os.environ[variable_name]
-                    print(argument)
-                elif variable_name in local_variables.key():
-                    argument = local_variables[variable_name]
+                    command[i] = os.environ[variable_name]
+                elif variable_name in local_variables:
+                    command[i] = local_variables[variable_name]
+               
 
         if is_built_in(command[0]):
             error = response(command)
